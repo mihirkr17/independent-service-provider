@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
 import { Button, Form } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
-import { useCreateUserWithEmailAndPassword } from 'react-firebase-hooks/auth';
+import { useCreateUserWithEmailAndPassword, useUpdateProfile } from 'react-firebase-hooks/auth';
 import auth from '../../../../firebase.init';
 import SocialLogin from '../SocialLogin/SocialLogin';
+import { sendEmailVerification } from 'firebase/auth';
 
 
 
 const Register = () => {
+   const [dName, setDName] = useState('');
    const [email, setEmail] = useState('');
    const [pwd, setPwd] = useState('');
    const navigate = useNavigate();
@@ -18,16 +20,29 @@ const Register = () => {
       user,
       loading,
       error,
-   ] = useCreateUserWithEmailAndPassword(auth);
+   ] = useCreateUserWithEmailAndPassword(auth, { sendEmailVerification: true });
 
-   let err;
+   const [updateProfile, updateErr] = useUpdateProfile(auth);
+
+   // for sign up input validation
+   let err = "";
    if (error) {
-      err = (
+      err += (
          <div>
             <p className='text-danger'>Error: {error.message}</p>
          </div>
       );
    }
+
+   // for update profile validation
+   if (updateErr) {
+      err += (
+         <div>
+            <p className='text-danger'>Error: {updateErr.message}</p>
+         </div>
+      );
+   }
+
 
    // Loading when trying to signup the site
    let load;
@@ -44,9 +59,10 @@ const Register = () => {
    }
 
    // Register Button
-   const handleRegister = (e) => {
+   const handleRegister = async (e) => {
       e.preventDefault();
-      createUserWithEmailAndPassword(email, pwd);
+      await createUserWithEmailAndPassword(email, pwd);
+      await updateProfile({ displayName: dName });
    }
 
 
@@ -59,7 +75,7 @@ const Register = () => {
                   <Form onSubmit={handleRegister}>
                      <Form.Group className="mb-3" controlId="formBasicEmail">
                         <Form.Label>Username</Form.Label>
-                        <Form.Control type="text" name='name' placeholder="Enter username" />
+                        <Form.Control type="text" name='name' onChange={(e) => setDName(e.target.value)} placeholder="Enter username" />
                      </Form.Group>
 
                      <Form.Group className="mb-3" controlId="formBasicEmail">

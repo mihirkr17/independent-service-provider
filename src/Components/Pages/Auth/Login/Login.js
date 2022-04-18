@@ -3,8 +3,10 @@ import './Login.css';
 import { Button, Form } from 'react-bootstrap';
 import { useLocation, useNavigate } from 'react-router-dom';
 import auth from '../../../../firebase.init';
-import { useSignInWithEmailAndPassword } from 'react-firebase-hooks/auth';
+import { useSendPasswordResetEmail, useSignInWithEmailAndPassword } from 'react-firebase-hooks/auth';
 import SocialLogin from '../SocialLogin/SocialLogin';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Login = () => {
    const [email, setEmail] = useState('');
@@ -21,6 +23,9 @@ const Login = () => {
       error,
    ] = useSignInWithEmailAndPassword(auth);
 
+   // password reset
+   const [sendPasswordResetEmail, sending] = useSendPasswordResetEmail(auth);
+
    // If any err occurs then err will be show
    let err;
    if (error) {
@@ -33,7 +38,7 @@ const Login = () => {
 
    // Loading when trying to login the site
    let load;
-   if (loading) {
+   if (loading || sending) {
       load = <p>Loading...</p>;
    }
 
@@ -49,6 +54,16 @@ const Login = () => {
    const goRegister = () => {
       navigate(`/register`);
    }
+
+   const resetPassword = async () => {
+      if (email) {
+          await sendPasswordResetEmail(email);
+          toast('Sent email');
+      }
+      else{
+          toast('please enter your email address');
+      }
+  }
 
    return (
       <div className='login_form__section py-5'>
@@ -66,9 +81,6 @@ const Login = () => {
                         <Form.Label>Password</Form.Label>
                         <Form.Control type="password" onChange={(e) => setPwd(e.target.value)} placeholder="Password" />
                      </Form.Group>
-                     <Form.Group className="mb-3" controlId="formBasicCheckbox">
-                        <Form.Check type="checkbox" label="Check me out" />
-                     </Form.Group>
 
                      <Form.Group>
                         {load}
@@ -81,8 +93,12 @@ const Login = () => {
                         </Button>
                      </Form.Group>
                   </Form>
+
+
                   <p className='text-center'>New to HealthCoach ? <span className="text-danger" style={{ cursor: "pointer" }} onClick={goRegister}>Please Register</span></p>
+                  <p>Forget Password? <button className='btn btn-link text-primary pe-auto text-decoration-none' onClick={resetPassword}>Reset Password</button> </p>
                   <SocialLogin></SocialLogin>
+                  <ToastContainer></ToastContainer>
                </div>
 
 

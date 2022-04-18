@@ -1,0 +1,25 @@
+.notfound__section {
+   position: relative;
+   min-height: 80vh;
+}
+
+.notfound_content {
+   position: absolute;
+   top: 50%;
+   left: 50%;
+   transform: translate(-50%, -50%);
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   flex-direction: column;
+}
+
+.notfound_content h1 {
+   font-size: 6rem;
+   font-weight: bold;
+   letter-spacing: 1.5px;
+}
+
+.notfound_content p {
+   font-size: 1.2rem;
+}

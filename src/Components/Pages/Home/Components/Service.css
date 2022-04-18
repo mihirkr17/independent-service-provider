@@ -1,0 +1,6 @@
+.service_card {
+   transition: all 0.5s linear;
+}
+.service_card:hover {
+   background-color: rgb(238, 238, 238);
+}

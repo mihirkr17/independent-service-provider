@@ -1,11 +1,8 @@
 import React from 'react';
-import { useApi } from '../../../../hooks/useApi';
+import { ServiceData } from '../../../../Data/ServiceData';
 import Service from './Service';
 
-const Services = ({data}) => {
-
- 
-
+const Services = () => {
 
    return (
       <section className="services__section py-5" id='services'>
@@ -14,7 +11,7 @@ const Services = ({data}) => {
 
             <div className="row">
                {
-                  data ? data.map(service => {
+                  ServiceData ? ServiceData.map(service => {
                      const { id } = service;
 
                      return (

@@ -57,13 +57,13 @@ const Login = () => {
 
    const resetPassword = async () => {
       if (email) {
-          await sendPasswordResetEmail(email);
-          toast('Sent email');
+         await sendPasswordResetEmail(email);
+         toast('Sent email');
       }
-      else{
-          toast('please enter your email address');
+      else {
+         toast('please enter your email address');
       }
-  }
+   }
 
    return (
       <div className='login_form__section py-5'>
@@ -100,7 +100,6 @@ const Login = () => {
                   <SocialLogin></SocialLogin>
                   <ToastContainer></ToastContainer>
                </div>
-
 
             </div>
          </div>

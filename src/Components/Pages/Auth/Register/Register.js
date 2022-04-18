@@ -1,24 +1,32 @@
-import React from 'react';
+import React, { useRef, useState } from 'react';
 import { Button, Form } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
+import { useCreateUserWithEmailAndPassword } from 'react-firebase-hooks/auth';
+import auth from '../../../../firebase.init';
 
 
 const Register = () => {
-
+   const [email, setEmail] = useState('');
+   const [pwd, setPwd] = useState('');
    const navigate = useNavigate();
+   const [
+      createUserWithEmailAndPassword,
+      user,
+      loading,
+      error,
+   ] = useCreateUserWithEmailAndPassword(auth);
+
+   if (user) {
+      navigate('/login');
+   }
+
    const goLogin = () => {
       navigate('/login');
    }
 
-   // Sign up with google
-
-
-
    const handleRegister = (e) => {
       e.preventDefault();
-      const name = e.target.name.value;
-      const email = e.target.email.value;
-      const password = e.target.password.value;
+      createUserWithEmailAndPassword(email, pwd);
    }
 
 
@@ -36,12 +44,12 @@ const Register = () => {
 
                      <Form.Group className="mb-3" controlId="formBasicEmail">
                         <Form.Label>Email address</Form.Label>
-                        <Form.Control type="email" name='email' placeholder="Enter email" />
+                        <Form.Control type="email" name='email' onChange={(e) => setEmail(e.target.value)} placeholder="Enter email" />
                      </Form.Group>
 
                      <Form.Group className="mb-3" controlId="formBasicPassword">
                         <Form.Label>Password</Form.Label>
-                        <Form.Control type="password" name='password' placeholder="Password" />
+                        <Form.Control type="password" name='password' onChange={(e) => setPwd(e.target.value)} placeholder="Password" />
                      </Form.Group>
 
                      <Form.Group className="text-center mb-4">
@@ -61,8 +69,6 @@ const Register = () => {
                      <h4 className="py-3">Sign Up with</h4>
                      <div className="third_party_auth_btn d-flex align-items-center justify-content-evenly">
                         <Button>Google</Button>
-                        <Button>facebook</Button>
-                        <Button>Github</Button>
                      </div>
                   </div>
                </div>

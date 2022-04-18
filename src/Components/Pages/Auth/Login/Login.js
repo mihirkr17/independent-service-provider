@@ -1,19 +1,35 @@
-import React, { useRef } from 'react';
+import React, { useState } from 'react';
 import './Login.css';
 import { Button, Form } from 'react-bootstrap';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
+import auth from '../../../../firebase.init';
+import { useSignInWithEmailAndPassword } from 'react-firebase-hooks/auth';
 
 const Login = () => {
+   const [email, setEmail] = useState('');
+   const [pwd, setPwd] = useState('');
+
+
    const navigate = useNavigate();
-   const emailRef = useRef("");
-   const pwdRef = useRef("");
+
+   const location = useLocation();
+
+   let from = location.state?.from?.pathname || "/";
+
+   const [
+      signInWithEmailAndPassword,
+      user,
+      loading,
+      error,
+    ] = useSignInWithEmailAndPassword(auth);
+
+    if (user) {
+      navigate(from, {replace: true});
+    }
 
    const handleSubmit = (event) => {
       event.preventDefault();
-
-      const email = emailRef.current.value;
-      const pwd = pwdRef.current.value;
-
+      signInWithEmailAndPassword(email, pwd);
    }
 
    const goRegister = () => {
@@ -29,12 +45,12 @@ const Login = () => {
                   <Form onSubmit={handleSubmit} className="mb-4">
                      <Form.Group className="mb-3" controlId="formBasicEmail">
                         <Form.Label>Email address</Form.Label>
-                        <Form.Control ref={emailRef} type="email" placeholder="Enter email" />
+                        <Form.Control onChange={(e) => setEmail(e.target.value)} type="email" placeholder="Enter email" />
                      </Form.Group>
 
                      <Form.Group className="mb-3" controlId="formBasicPassword">
                         <Form.Label>Password</Form.Label>
-                        <Form.Control type="password" ref={pwdRef} placeholder="Password" />
+                        <Form.Control type="password" onChange={(e) => setPwd(e.target.value)} placeholder="Password" />
                      </Form.Group>
                      <Form.Group className="mb-3" controlId="formBasicCheckbox">
                         <Form.Check type="checkbox" label="Check me out" />

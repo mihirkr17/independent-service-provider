@@ -4,14 +4,12 @@ import { Button, Form } from 'react-bootstrap';
 import { useLocation, useNavigate } from 'react-router-dom';
 import auth from '../../../../firebase.init';
 import { useSignInWithEmailAndPassword } from 'react-firebase-hooks/auth';
+import SocialLogin from '../SocialLogin/SocialLogin';
 
 const Login = () => {
    const [email, setEmail] = useState('');
    const [pwd, setPwd] = useState('');
-
-
    const navigate = useNavigate();
-
    const location = useLocation();
 
    let from = location.state?.from?.pathname || "/";
@@ -21,11 +19,27 @@ const Login = () => {
       user,
       loading,
       error,
-    ] = useSignInWithEmailAndPassword(auth);
+   ] = useSignInWithEmailAndPassword(auth);
 
-    if (user) {
-      navigate(from, {replace: true});
-    }
+   // If any err occurs then err will be show
+   let err;
+   if (error) {
+      err = (
+         <div>
+            <p className='text-danger'>Error: {error.message}</p>
+         </div>
+      );
+   }
+
+   // Loading when trying to login the site
+   let load;
+   if (loading) {
+      load = <p>Loading...</p>;
+   }
+
+   if (user) {
+      navigate(from, { replace: true });
+   }
 
    const handleSubmit = (event) => {
       event.preventDefault();
@@ -56,6 +70,11 @@ const Login = () => {
                         <Form.Check type="checkbox" label="Check me out" />
                      </Form.Group>
 
+                     <Form.Group>
+                        {load}
+                        {err}
+                     </Form.Group>
+
                      <Form.Group className='text-center'>
                         <Button variant="primary" type="submit">
                            Login
@@ -63,9 +82,10 @@ const Login = () => {
                      </Form.Group>
                   </Form>
                   <p className='text-center'>New to HealthCoach ? <span className="text-danger" style={{ cursor: "pointer" }} onClick={goRegister}>Please Register</span></p>
+                  <SocialLogin></SocialLogin>
                </div>
 
-               
+
             </div>
          </div>
       </div>

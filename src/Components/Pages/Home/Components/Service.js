@@ -18,8 +18,8 @@ const Service = ({ service }) => {
                {description.slice(0, 60) + "..."}
             </Card.Text>
          </Card.Body>
-         <Card.Body>
-            <Card.Link as={Link} to={`/checkout/${id}`}>More Info</Card.Link>
+         <Card.Body className='text-end'>
+            <Card.Link as={Link} className='btn btn-info' to={`/checkout/${id}`}>More Info</Card.Link>
          </Card.Body>
       </Card>
    );
